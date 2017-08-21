@@ -8,5 +8,5 @@ object ProjectThreeDriver extends App {
 
   val segmentedLines = new StateMachine(lines).segmentLines
 
-  segmentedLines.toHtmlFile("output.html")
+  segmentedLines.toHtmlFile("rippeth.html")
 }
