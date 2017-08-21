@@ -53,7 +53,7 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
     s"$head $rest"
   }
 
-  /** Adds a string to the end of a given string
+  /** Adds a space to the end of a given string
     *
     * @param s the string to which a space should be added
     * @return the string with a space at the end
