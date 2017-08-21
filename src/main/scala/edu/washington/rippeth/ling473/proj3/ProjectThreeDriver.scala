@@ -3,7 +3,8 @@ package edu.washington.rippeth.ling473.proj3
 import scala.io.Source
 
 object ProjectThreeDriver extends App {
-  val lines = Source.fromFile("fsm-input.utf8.txt").getLines.toIterable
+  val filename = args(0)
+  val lines = Source.fromFile(filename).getLines.toIterable
 
   val segmentedLines = new StateMachine(lines).segmentLines
 

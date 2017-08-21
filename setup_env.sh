@@ -11,7 +11,7 @@ function run() {
 
   # Add SBT to path
   export PATH="$PATH:/usr/share/sbt/bin"
-  sbt --warn "run /corpora/LDC/LDC02T31/nyt/2000"
+  sbt --warn "run /opt/dropbox/17-18/473/project3/fsm-input.utf8.txt"
 }
 
 function run_test() {
