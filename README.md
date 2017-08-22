@@ -76,6 +76,9 @@ The output HTML is:
 
 I used a monadic construction of a FSM to transition from state to state based on different actions.
 
+Given a current state and a character, I check inclusion in different categories to determine to which
+state the machine should next enter. 
+
 ## Tools
 
 For this project, I used primarily the Scala standard library with the exception of a few helper libraries:
