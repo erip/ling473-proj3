@@ -29,4 +29,8 @@ package object proj3 {
     sb.append(' ')
     sb
   }
+
+  // optionallyAppend
+  // addSpaceBeforeLast
+  // addSpaceAtEnd
 }
