@@ -11,27 +11,41 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
 
   /** A base class of any state that the machine could take
     *
-    * @param stringOut the output string at the current tape
+    * @param stringBuilderIn the input string builder at the current tape
+    * @param char the optional char to append to the string builder
     */
-  private sealed abstract class State(val stringOut: StringBuilder)
+  private sealed abstract class State(stringBuilderIn: StringBuilder, char: Option[Char] = None) {
+    val stringBuilderOut: StringBuilder = optionallyAppend(stringBuilderIn, char)
+  }
+
+  private def optionallyAppend(sb: StringBuilder, char: Option[Char]): StringBuilder = char match {
+    case Some(c) =>
+      sb.append(c)
+      sb
+    case None =>
+      sb
+  }
 
   // State0 through State6 are very vanilla -- just appending
   // a character to the output string
-  private final case class State0(sb: StringBuilder) extends State(sb)
-  private final case class State1(sb: StringBuilder) extends State(sb)
-  private final case class State2(sb: StringBuilder) extends State(sb)
-  private final case class State3(sb: StringBuilder) extends State(sb)
-  private final case class State4(sb: StringBuilder) extends State(sb)
-  private final case class State5(sb: StringBuilder) extends State(sb)
-  private final case class State6(sb: StringBuilder) extends State(sb)
+  private final case class State0(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State1(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State2(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State3(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State4(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State5(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
+  private final case class State6(sb: StringBuilder, c: Option[Char]) extends State(sb, c)
 
   // State7 and State8 are special -- add a space before the last character
   // in the output string
-  private final case class State7(sb: StringBuilder) extends State(addSpaceBeforeLast(sb))
-  private final case class State8(sb: StringBuilder) extends State(addSpaceBeforeLast(sb))
+  private final case class State7(sb: StringBuilder, c: Option[Char])
+    extends State(addSpaceBeforeLast(optionallyAppend(sb, c)))
+  private final case class State8(sb: StringBuilder, c: Option[Char])
+    extends State(addSpaceBeforeLast(optionallyAppend(sb, c)))
 
   // State9 is also special -- add a space to the end of the output string
-  private final case class State9(sb: StringBuilder) extends State(addSpaceAtEnd(sb))
+  private final case class State9(sb: StringBuilder, c: Option[Char])
+    extends State(addSpaceAtEnd(optionallyAppend(sb, c)))
 
   // The categories that force transitions
   private final val V1: Set[Char] = "เแโใไ".toSet
@@ -70,203 +84,125 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
   private def action0(implicit oldState: State, c: Char): State =
     if(V1.contains(c)) {
       logger.trace("Going to state 1")
-      State1 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State1(oldState.stringBuilderOut, Some(c))
     }
     else if(C1.contains(c)) {
       logger.trace("Going to state 2")
-      State2 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State2(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action1(oldState: State, c: Char): State =
     if(C1.contains(c)) {
       logger.trace("Going to state 2")
-      State2 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State2(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action2(oldState: State, c: Char): State =
     if(C2.contains(c)) {
       logger.trace("Going to state 3")
-      State3 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State3(oldState.stringBuilderOut, Some(c))
     }
     else if(V2.contains(c)) {
       logger.trace("Going to state 4")
-      State4 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State4(oldState.stringBuilderOut, Some(c))
     }
     else if(T.contains(c)) {
       logger.trace("Going to state 5")
-      State5 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State5(oldState.stringBuilderOut, Some(c))
     }
     else if(V3.contains(c)) {
       logger.trace("Going to state 6")
-      State6 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State6(oldState.stringBuilderOut, Some(c))
     }
     else if(C3.contains(c)) {
       logger.trace("Going to state 9")
-      State9 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State9(oldState.stringBuilderOut, Some(c))
     }
     else if(V1.contains(c)) {
       logger.trace("Going to state 7")
-      State7 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State7(oldState.stringBuilderOut, Some(c))
     }
     else if(C1.contains(c)) {
       logger.trace("Going to state 8")
-      State8 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State8(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action3(oldState: State, c: Char): State =
     if(V2.contains(c)) {
       logger.trace("Going to state 4")
-      State4 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State4(oldState.stringBuilderOut, Some(c))
     }
     else if(T.contains(c)) {
       logger.trace("Going to state 5")
-      State5 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State5(oldState.stringBuilderOut, Some(c))
     }
     else if(V3.contains(c)) {
       logger.trace("Going to state 6")
-      State6 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State6(oldState.stringBuilderOut, Some(c))
     }
     else if(C3.contains(c)) {
       logger.trace("Going to state 9")
-      State9 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State9(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action4(oldState: State, c: Char): State =
     if(T.contains(c)) {
       logger.trace("Going to state 5")
-      State5 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State5(oldState.stringBuilderOut, Some(c))
     }
     else if(V3.contains(c)) {
       logger.trace("Going to state 6")
-      State6 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State6(oldState.stringBuilderOut, Some(c))
     }
     else if(C3.contains(c)) {
       logger.trace("Going to state 9")
-      State9 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State9(oldState.stringBuilderOut, Some(c))
     }
     else if(V1.contains(c)) {
       logger.trace("Going to state 7")
-      State7 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State7(oldState.stringBuilderOut, Some(c))
     }
     else if(C1.contains(c)) {
       logger.trace("Going to state 8")
-      State8 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State8(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action5(oldState: State, c: Char): State =
     if(V3.contains(c)) {
       logger.trace("Going to state 6")
-      State6 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State6(oldState.stringBuilderOut, Some(c))
     }
     else if(C3.contains(c)) {
       logger.trace("Going to state 9")
-      State9 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State9(oldState.stringBuilderOut, Some(c))
     }
     else if(V1.contains(c)) {
       logger.trace("Going to state 7")
-      State7 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State7(oldState.stringBuilderOut, Some(c))
     }
     else if(C1.contains(c)) {
       logger.trace("Going to state 8")
-      State8 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State8(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action6(oldState: State, c: Char): State =
     if(C3.contains(c)) {
       logger.trace("Going to state 9")
-      State9 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State9(oldState.stringBuilderOut, Some(c))
     }
     else if(V1.contains(c)) {
       logger.trace("Going to state 7")
-      State7 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State7(oldState.stringBuilderOut, Some(c))
     }
     else if(C1.contains(c)) {
       logger.trace("Going to state 8")
-      State8 {
-        oldState.stringOut.append(c)
-        oldState.stringOut
-      }
+      State8(oldState.stringBuilderOut, Some(c))
     }
     else throw new IllegalArgumentException(s"Invalid input '$c'")
 
@@ -298,7 +234,7 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
   }
 
   logger.trace("In state 0")
-  private final def initialState: State = State0(new StringBuilder)
+  private final def initialState: State = State0(new StringBuilder, None)
 
   /** For a given line, this function will work through
     *  the entire transition of state in the state machine.
@@ -314,7 +250,7 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
       logger.trace(s"Handling $c")
       segmentationFunction(state, c)
     }
-    logger.debug(s"Processed line: ${state.stringOut}")
+    logger.debug(s"Processed line: ${state.stringBuilderOut.toString()}")
     state
   }
 
@@ -324,7 +260,7 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
     * @param line the line being processed
     * @return the output string of the final state
     */
-  private def segmentLine(line: String): String = transition(line, initialState).stringOut.toString
+  private def segmentLine(line: String): String = transition(line, initialState).stringBuilderOut.toString
 
   /** Segments all lines
     *
