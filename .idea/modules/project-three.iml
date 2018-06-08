@@ -25,5 +25,6 @@
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.typesafe.scala-logging:scala-logging_2.12:3.7.2:jar" level="project" />
     <orderEntry type="library" name="sbt: ch.qos.logback:logback-core:1.2.3:jar" level="project" />
+    <orderEntry type="library" name="scala-sdk-2.12" level="application" />
   </component>
 </module>

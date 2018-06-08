@@ -97,8 +97,7 @@ class StateMachine(lines: Iterable[String]) extends LazyLogging {
     } else if(C1.contains(c)) {
       logger.trace("Going to state 8")
       State8(oldState.stringBuilderOut, Some(c))
-    }
-    else
+    } else
       throw new IllegalArgumentException(s"Invalid input '$c'")
 
   private def action5(oldState: State, c: Char): State =
