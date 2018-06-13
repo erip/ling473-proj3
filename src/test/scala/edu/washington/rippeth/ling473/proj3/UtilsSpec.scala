@@ -9,12 +9,6 @@ class UtilsSpec extends WordSpecLike with Matchers {
     block(sb)
   }
 
-  /*
-    // optionallyAppend
-  // addSpaceBeforeLast
-  // addSpaceAtEnd
-   */
-
   "optionallyAppend" should {
     "append when the character is not None" in withCleanStringBuilder { sb =>
       sb shouldBe empty
